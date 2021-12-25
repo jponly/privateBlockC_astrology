@@ -1,0 +1,68 @@
+// Block data
+
+{
+    "hash": "",
+    "height": 0,
+    "body": [
+    ],
+    "time": 0,
+    "previousblockhash": ""
+}
+
+
+class Block {
+
+    
+	constructor(data){
+		this.hash = null; 
+		this.height = 0;  
+		this.body = Buffer.from(JSON.stringify(data)).toString('hex');  
+		this.time = 0;  
+		this.previousBlockHash = null;  
+      }
+}
+
+
+ class Blockchain{
+    constructor(){
+      
+      this.chain = [];
+      
+      this.addBlock(this.createGenesisBlock());
+   }
+
+  createGenesisBlock(){
+    return new Block("First block in the chain - Genesis block");
+  }
+
+
+  addBlock(newBlock){
+    newBlock.height = this.chain.length;
+    newBlock.time = new Date().getTime().toString().slice(0,-3);
+    if (this.chain.length>0) {
+      
+      newBlock.previousHash = this.chain[this.chain.length-1].hash;
+    }
+    
+    newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
+    
+    this.chain.push(newBlock);
+  }
+}
+
+
+/**
+     * The requestMessageOwnershipVerification(address) method
+     * will allow you  to request a message that you will use to
+     * sign it with your Bitcoin Wallet (Electrum or Bitcoin Core)
+     * This is the first step before submit your Block.
+     * The method return a Promise that will resolve with the message to be signed
+     * @param {*} address 
+     */
+    requestMessageOwnershipVerification(address) {
+        return new Promise((resolve) => {
+            let message = '${1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN}:${new Date().getTime().toString().slice(0,-3)}:starRegistry';
+            resolve(message);
+            
+        });
+    }
